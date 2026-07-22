@@ -16,5 +16,5 @@ oculto: false
 - **Skinner, B. F.** (1953). *Science and Human Behavior*. Macmillan.
 
 ---
-
+> *Nota del desarrollador:*
 > *Para agregar o quitar referencias, edita las líneas con `-` debajo del título `## Referencias`. Usa el formato Markdown estándar de lista.*

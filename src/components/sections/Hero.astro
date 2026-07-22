@@ -11,18 +11,20 @@ const { Content } = await render(entry);
 
 <section
   id="main"
-  class="relative overflow-hidden py-20 md:py-28 lg:py-36 bg-cover bg-center bg-no-repeat"
-  style="background-image: url('/images/backgorund.png');"
+  class="relative overflow-hidden py-20 md:py-28 lg:py-36"
   aria-labelledby="hero-titulo"
 >
-  <!-- Capa de superposición: bloque negro al 75% de opacidad -->
-  <div class="absolute inset-0 bg-black/75 pointer-events-none" aria-hidden="true"></div>
+  <!-- Imagen + overlay oscuro, con mask que funde el borde inferior con el fondo del sitio -->
+  <div
+    class="hero-fade absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+    style="background-image: url('/images/backgorund.png');"
+    aria-hidden="true"
+  >
+    <div class="absolute inset-0 bg-black/75"></div>
+  </div>
 
   <!-- Contenido principal -->
-  <div class="container-page relative z-10 flex flex-col items-center text-center max-w-4xl mx-auto">
-    <BlurFade as="p" delay={0.05} duration={0.6} class="text-sm font-semibold uppercase tracking-[0.25em] text-[var(--color-accent)]">
-      Artículo informativo
-    </BlurFade>
+  <div class="container-page relative z-20 flex flex-col items-center text-center max-w-4xl mx-auto">
     <BlurFade as="h1" delay={0.15} duration={0.8} class="mt-4 font-display text-4xl font-semibold leading-[1.08] text-white sm:text-5xl md:text-6xl lg:text-7xl text-balance">
       <span id="hero-titulo">{entry.data.titulo}</span>
     </BlurFade>

@@ -141,13 +141,12 @@
   .text-balance { text-wrap: balance; }
   .text-pretty  { text-wrap: pretty; }
 
-  /* Dotted divider reutilizable */
-  .dotted-divider {
-    background-image: radial-gradient(circle, var(--color-border) 1px, transparent 1px);
-    background-size: 12px 12px;
-    background-repeat: repeat-x;
-    background-position: top;
-    height: 12px;
+  /* Fade del hero hacia el fondo (shader animado o color estático):
+     mask vuelve transparente el borde inferior, fundiendo con lo que haya detrás */
+  .hero-fade {
+    -webkit-mask-image: linear-gradient(to bottom, black calc(100% - 10rem), transparent 100%);
+    mask-image: linear-gradient(to bottom, black calc(100% - 10rem), transparent 100%);
+    /* ponytail: un solo fade de 10rem en vez de alturas por breakpoint; la diferencia visual es imperceptible */
   }
 
   /* Gradiente sutil para hero */

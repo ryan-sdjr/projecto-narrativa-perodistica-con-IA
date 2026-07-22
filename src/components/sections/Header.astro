@@ -8,12 +8,13 @@ const headerEntry = await getEntry("site", "header");
 <header class="sticky top-0 z-40 w-full border-b border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-background)_85%,transparent)] backdrop-blur-md">
   <div class="container-page flex h-16 items-center justify-between gap-4">
     <a href="#main" class="flex items-center gap-3 group" aria-label="Inicio - Universidad Autónoma del Perú">
-      <span class="grid h-10 w-10 place-items-center rounded-full bg-[var(--color-primary)] text-[var(--color-primary-foreground)] font-display text-xl font-semibold transition-transform group-hover:scale-105">
-        A
-      </span>
-      <span class="flex flex-col leading-none">
-        <span class="font-display text-lg font-semibold text-[var(--color-foreground)]">Autónoma</span>
-        <span class="text-[10px] uppercase tracking-wider text-[var(--color-muted-foreground)]">Universidad Autónoma del Perú</span>
+      <img
+        src="/images/Autonoma_logov2.png"
+        alt="Logo Universidad Autónoma del Perú"
+        class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
+      />
+      <span class="font-display text-base font-semibold tracking-tight text-[var(--color-foreground)] sm:text-lg">
+        Universidad Autónoma del Perú
       </span>
     </a>
 
