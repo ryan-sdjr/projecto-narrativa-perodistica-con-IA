@@ -19,7 +19,7 @@
   },
   "brainViewer": {
     "titulo": "Descripción de reacción cerebral",
-    "descripcion": "Modelo 3D interactivo de un cerebro humano. Arrastra para rotarlo 360°.",
+    "descripcion": "Modelo 3D interactivo. Arrastra para rotarlo 360°.",
     "cargando": "Cargando modelo 3D…",
     "alternativo": "Tu navegador no soporta el visor 3D. Aquí verás un modelo interactivo del cerebro."
   },
