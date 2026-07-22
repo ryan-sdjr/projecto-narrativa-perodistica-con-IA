@@ -7,11 +7,14 @@ import EjesTabs from "../components/sections/EjesTabs.astro";
 import BrainViewer from "../components/sections/BrainViewer.astro";
 import Conclusions from "../components/sections/Conclusions.astro";
 import Bibliography from "../components/sections/Bibliography.astro";
+import ShaderBackground from "../components/ui/ShaderBackground.astro";
+import ShaderToggle from "../components/ui/ShaderToggle.astro";
 ---
 
 <BaseLayout>
+  <ShaderBackground />
   <Header />
-  <main>
+  <main class="relative z-10">
     <Hero />
     <Intro />
     <EjesTabs />
@@ -19,4 +22,5 @@ import Bibliography from "../components/sections/Bibliography.astro";
     <Conclusions />
     <Bibliography />
   </main>
+  <ShaderToggle />
 </BaseLayout>

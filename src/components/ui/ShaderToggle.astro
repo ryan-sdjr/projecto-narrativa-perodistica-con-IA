@@ -1,0 +1,57 @@
+---
+---
+
+<div class="fixed bottom-4 right-4 z-40">
+  <button
+    type="button"
+    data-shader-toggle-btn
+    aria-label="Desactivar o activar fondo 3D"
+    title="Alternar fondo 3D (para dispositivos o conexiones de menor potencia)"
+    class="group inline-flex items-center gap-2 rounded-full border border-[color-mix(in_oklab,var(--color-border)_80%,transparent)] bg-[color-mix(in_oklab,var(--color-card)_85%,transparent)] px-3.5 py-2 text-xs font-medium text-[var(--color-foreground)] shadow-lg backdrop-blur-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
+  >
+    <span data-shader-dot class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse transition-colors"></span>
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-[var(--color-accent)] transition-transform group-hover:rotate-12">
+      <path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/>
+    </svg>
+    <span data-shader-text>Fondo 3D: ON</span>
+  </button>
+</div>
+
+<script>
+  const initToggle = () => {
+    const btns = document.querySelectorAll<HTMLButtonElement>("[data-shader-toggle-btn]");
+    btns.forEach((btn) => {
+      const dot = btn.querySelector<HTMLElement>("[data-shader-dot]");
+      const text = btn.querySelector<HTMLElement>("[data-shader-text]");
+
+      const updateUI = (enabled: boolean) => {
+        if (dot) {
+          dot.className = enabled
+            ? "h-2 w-2 rounded-full bg-emerald-400 animate-pulse transition-colors"
+            : "h-2 w-2 rounded-full bg-zinc-500 transition-colors";
+        }
+        if (text) {
+          text.textContent = enabled ? "Fondo 3D: ON" : "Fondo 3D: OFF";
+        }
+        btn.setAttribute("aria-pressed", String(enabled));
+      };
+
+      btn.addEventListener("click", () => {
+        window.dispatchEvent(new CustomEvent("toggle-shader-event"));
+      });
+
+      window.addEventListener("shader-state-changed", (e: Event) => {
+        const detail = (e as CustomEvent).detail;
+        if (detail) updateUI(detail.enabled);
+      });
+
+      const stored = localStorage.getItem("shader-enabled");
+      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      const initialEnabled = stored !== null ? stored === "true" : !reducedMotion;
+      updateUI(initialEnabled);
+    });
+  };
+
+  initToggle();
+  document.addEventListener("astro:page-load", initToggle);
+</script>

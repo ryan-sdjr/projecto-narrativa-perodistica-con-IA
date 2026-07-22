@@ -5,9 +5,12 @@ import BlurFade from "../motion/BlurFade.astro";
 
 <section
   id="conclusiones"
-  class="relative border-t-2 border-dashed border-[var(--color-border)] py-16 md:py-24"
+  class="relative py-16 md:py-24"
   aria-labelledby="conclusiones-titulo"
 >
+  <!-- Separador elegante con gradiente tenue -->
+  <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent pointer-events-none" aria-hidden="true"></div>
+
   <div class="container-page">
     <div class="mx-auto max-w-3xl">
       <BlurFade class="mb-8 flex items-center gap-3" duration={0.6}>
