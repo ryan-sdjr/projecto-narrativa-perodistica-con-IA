@@ -1,6 +1,5 @@
 ---
 id: hero
-slug: hero
 titulo: "¿Biología o debilidad?"
 subtitulo: "Por qué los adolescentes son el blanco perfecto de la manipulación"
 orden: 1

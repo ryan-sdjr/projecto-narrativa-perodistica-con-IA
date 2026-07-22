@@ -1,6 +1,5 @@
 ---
 id: eje-1
-slug: eje-1
 titulo: "Eje 1: La corteza prefrontal en desarrollo"
 subtitulo: "Juicio crítico en construcción"
 orden: 3

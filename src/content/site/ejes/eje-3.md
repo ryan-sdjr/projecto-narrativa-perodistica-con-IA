@@ -1,6 +1,5 @@
 ---
 id: eje-3
-slug: eje-3
 titulo: "Eje 3: Plasticidad sináptica e impronta digital"
 subtitulo: "El cerebro que se cablea según lo que consume"
 orden: 5

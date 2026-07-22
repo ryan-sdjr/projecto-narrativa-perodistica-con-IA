@@ -1,40 +1,28 @@
 ---
-import { getEntry } from "astro:content";
 import strings from "../../data/strings.json";
 
-const headerEntry = await getEntry("site", "header");
-
-// ponytail: BASE_URL llega sin "/" final cuando --base no lo trae (Actions)
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/"); // ponytail: --base sin trailing slash (Actions)
+const nav = [
+  { href: "#intro", label: strings.nav.intro },
+  { href: "#ejes", label: strings.nav.ejes },
+  { href: "#cerebro", label: strings.nav.cerebro },
+  { href: "#conclusiones", label: strings.nav.conclusiones },
+  { href: "#bibliografia", label: strings.nav.bibliografia },
+];
 ---
 
 <header class="sticky top-0 z-40 w-full border-b border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-background)_85%,transparent)] backdrop-blur-md">
   <div class="container-page flex h-16 items-center justify-between gap-4">
-    <a href="#main" class="flex items-center gap-3 group" aria-label="Inicio - Universidad Autónoma del Perú">
-      <img
-        src={`${base}images/Autonoma_logov2.png`}
-        alt="Logo Universidad Autónoma del Perú"
-        class="h-10 w-auto object-contain transition-transform group-hover:scale-105"
-      />
-      <span class="font-display text-base font-semibold tracking-tight text-[var(--color-foreground)] sm:text-lg">
-        Universidad Autónoma del Perú
-      </span>
+    <a href="#main" class="flex items-center gap-3 group" aria-label="Inicio">
+      <img src={`${base}images/Autonoma_logov2.png`} alt="Logo Universidad Autónoma del Perú" class="h-10 w-auto object-contain transition-transform group-hover:scale-105" loading="eager" decoding="async" width="160" height="40" />
+      <span class="font-display text-base font-semibold tracking-tight text-[var(--color-foreground)] sm:text-lg">Universidad Autónoma del Perú</span>
     </a>
 
     <nav aria-label="Navegación principal" class="hidden md:block">
       <ul class="flex items-center gap-1">
-        {[
-          { href: "#intro", label: strings.nav.intro },
-          { href: "#ejes", label: strings.nav.ejes },
-          { href: "#cerebro", label: strings.nav.cerebro },
-          { href: "#conclusiones", label: strings.nav.conclusiones },
-          { href: "#bibliografia", label: strings.nav.bibliografia },
-        ].map((item) => (
+        {nav.map((item) => (
           <li>
-            <a
-              href={item.href}
-              class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:text-[var(--color-foreground)] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:scale-x-0 after:bg-[var(--color-accent)] after:transition-transform after:duration-300 hover:after:scale-x-100"
-            >
+            <a href={item.href} class="nav-link relative inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--color-muted-foreground)] hover:text-[var(--color-foreground)]">
               {item.label}
             </a>
           </li>
@@ -48,37 +36,19 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
       aria-expanded="false"
       aria-controls="mobile-menu"
       aria-label="Abrir menú"
-      class="md:hidden grid h-10 w-10 place-items-center rounded-md border border-[var(--color-border)] text-[var(--color-foreground)] transition-colors hover:bg-[var(--color-muted)]"
+      class="md:hidden grid h-10 w-10 place-items-center rounded-md border border-[var(--color-border)] text-[var(--color-foreground)] hover:bg-[var(--color-muted)]"
     >
-      <svg data-icon="menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
-      </svg>
-      <svg data-icon="close" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-      </svg>
+      <svg data-icon="menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      <svg data-icon="close" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
     </button>
   </div>
 
-  <div
-    id="mobile-menu"
-    data-mobile-menu
-    class="md:hidden hidden border-t border-[var(--color-border)] bg-[var(--color-background)]"
-  >
+  <div id="mobile-menu" data-mobile-menu class="md:hidden hidden border-t border-[var(--color-border)] bg-[var(--color-background)]">
     <nav aria-label="Navegación móvil" class="container-page py-4">
       <ul class="flex flex-col gap-1">
-        {[
-          { href: "#intro", label: strings.nav.intro },
-          { href: "#ejes", label: strings.nav.ejes },
-          { href: "#cerebro", label: strings.nav.cerebro },
-          { href: "#conclusiones", label: strings.nav.conclusiones },
-          { href: "#bibliografia", label: strings.nav.bibliografia },
-        ].map((item) => (
+        {nav.map((item) => (
           <li>
-            <a
-              href={item.href}
-              data-mobile-link
-              class="block rounded-md px-3 py-3 text-base font-medium text-[var(--color-foreground)] transition-colors hover:bg-[var(--color-muted)]"
-            >
+            <a href={item.href} data-mobile-link class="block rounded-md px-3 py-3 text-base font-medium text-[var(--color-foreground)] hover:bg-[var(--color-muted)]">
               {item.label}
             </a>
           </li>
@@ -88,39 +58,38 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   </div>
 </header>
 
+<style>
+  /* ponytail: subrayado animado de nav, antes inline con after+pseudo pesada */
+  .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.75rem; right: 0.75rem; bottom: 0;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s;
+  }
+  .nav-link:hover::after { transform: scaleX(1); }
+</style>
+
 <script>
   const init = () => {
     const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
     const menu = document.querySelector<HTMLDivElement>("[data-mobile-menu]");
-    const links = document.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]");
-    const iconMenu = document.querySelector<SVGElement>("[data-icon='menu']");
-    const iconClose = document.querySelector<SVGElement>("[data-icon='close']");
-
     if (!toggle || !menu) return;
 
-    const open = () => {
-      menu.classList.remove("hidden");
-      toggle.setAttribute("aria-expanded", "true");
-      toggle.setAttribute("aria-label", "Cerrar menú");
-      iconMenu?.classList.add("hidden");
-      iconClose?.classList.remove("hidden");
-    };
-    const close = () => {
-      menu.classList.add("hidden");
-      toggle.setAttribute("aria-expanded", "false");
-      toggle.setAttribute("aria-label", "Abrir menú");
-      iconMenu?.classList.remove("hidden");
-      iconClose?.classList.add("hidden");
+    const setOpen = (open: boolean) => {
+      menu.classList.toggle("hidden", !open);
+      toggle.setAttribute("aria-expanded", String(open));
+      toggle.setAttribute("aria-label", open ? "Cerrar menú" : "Abrir menú");
+      toggle.querySelector<SVGElement>("[data-icon='menu']")!.classList.toggle("hidden", open);
+      toggle.querySelector<SVGElement>("[data-icon='close']")!.classList.toggle("hidden", !open);
     };
 
-    toggle.addEventListener("click", () => {
-      const isOpen = toggle.getAttribute("aria-expanded") === "true";
-      isOpen ? close() : open();
-    });
-    links.forEach((l) => l.addEventListener("click", close));
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "Escape") close();
-    });
+    toggle.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+    menu.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]").forEach((l) => l.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (e) => { if (e.key === "Escape") setOpen(false); });
   };
   init();
   document.addEventListener("astro:page-load", init);

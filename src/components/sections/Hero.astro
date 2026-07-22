@@ -1,49 +1,35 @@
 ---
 import { getEntry } from "astro:content";
-import { render } from "astro:content";
-import BlurFade from "../motion/BlurFade.astro";
+import Reveal from "../motion/Reveal.astro";
 
 const entry = await getEntry("site", "hero");
-if (!entry) throw new Error("Falta el archivo hero.md en src/content/site/");
-
-const { Content } = await render(entry);
-
-// ponytail: BASE_URL llega sin "/" final cuando --base no lo trae (Actions)
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+if (!entry) throw new Error("Falta hero.md en src/content/site/");
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/"); // ponytail: --base sin trailing slash
 ---
 
-<section
-  id="main"
-  class="relative overflow-hidden py-20 md:py-28 lg:py-36"
-  aria-labelledby="hero-titulo"
->
-  <!-- Imagen + overlay oscuro, con mask que funde el borde inferior con el fondo del sitio -->
+<section id="main" class="relative overflow-hidden py-20 md:py-28 lg:py-36" aria-labelledby="hero-titulo">
   <div
-    class="hero-fade absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
+    class="hero-fade absolute inset-0 bg-cover bg-center bg-no-repeat"
     style={`background-image: url('${base}images/backgorund.png');`}
     aria-hidden="true"
   >
     <div class="absolute inset-0 bg-black/75"></div>
   </div>
 
-  <!-- Contenido principal -->
-  <div class="container-page relative z-20 flex flex-col items-center text-center max-w-4xl mx-auto">
-    <BlurFade as="h1" delay={0.15} duration={0.8} class="mt-4 font-display text-4xl font-semibold leading-[1.08] text-white sm:text-5xl md:text-6xl lg:text-7xl text-balance">
+  <div class="container-page relative z-20 mx-auto flex max-w-4xl flex-col items-center text-center">
+    <Reveal as="h1" delay={0.15} duration={0.8} blur={8} class="mt-4 font-display text-4xl font-semibold leading-[1.08] text-white sm:text-5xl md:text-6xl lg:text-7xl text-balance">
       <span id="hero-titulo">{entry.data.titulo}</span>
-    </BlurFade>
-    <BlurFade as="p" delay={0.3} duration={0.8} class="mt-6 max-w-2xl text-lg text-zinc-200 sm:text-xl md:text-2xl text-balance">
+    </Reveal>
+    <Reveal as="p" delay={0.3} duration={0.8} class="mt-6 max-w-2xl text-lg text-zinc-200 sm:text-xl md:text-2xl text-balance">
       {entry.data.subtitulo}
-    </BlurFade>
-    <BlurFade delay={0.45} duration={0.7} class="mt-8 flex items-center justify-center">
-      <a
-        href="#intro"
-        class="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)] px-7 py-3.5 text-base font-semibold text-white shadow-lg transition-all hover:scale-105 hover:shadow-xl active:scale-100"
-      >
+    </Reveal>
+    <Reveal delay={0.45} duration={0.7} class="mt-8 flex items-center justify-center">
+      <a href="#intro" class="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)] px-7 py-3.5 text-base font-semibold text-white shadow-lg transition-transform hover:scale-105 active:scale-100">
         Leer artículo
         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
           <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
         </svg>
       </a>
-    </BlurFade>
+    </Reveal>
   </div>
 </section>

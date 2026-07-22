@@ -1,6 +1,5 @@
 ---
 id: eje-2
-slug: eje-2
 titulo: "Eje 2: El sistema de recompensa dopaminérgico"
 subtitulo: "El cerebro adicto a la validación"
 orden: 4

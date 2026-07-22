@@ -9,15 +9,13 @@ interface Props {
 }
 
 const {
-  titulo = `${strings.site.nombre} — ${strings.site.descripcionCorta}`,
-  descripcion = "Artículo informativo sobre por qué los adolescentes son biológicamente vulnerables a la manipulación digital. Decodifica las mecánicas y promueve una ciudadanía digital consciente.",
+  titulo = strings.site.nombre,
+  descripcion = "Artículo informativo sobre por qué los adolescentes son biológicamente vulnerables a la manipulación digital.",
   imagenOg = "/og-image.png",
 } = Astro.props;
 
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
-
-// ponytail: BASE_URL llega sin "/" final cuando --base no lo trae (Actions)
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/"); // ponytail: --base sin trailing slash (Actions)
 ---
 
 <!doctype html>
@@ -51,16 +49,15 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
     <meta name="twitter:image" content={new URL(imagenOg, Astro.site).toString()} />
 
     <link rel="preconnect" href="https://modelviewer.dev" crossorigin />
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "Article",
-      "headline": titulo,
-      "description": descripcion,
-      "inLanguage": "es",
-      "author": { "@type": "Organization", "name": strings.site.autor },
-      "publisher": { "@type": "Organization", "name": strings.site.autor },
+      headline: titulo,
+      description: descripcion,
+      inLanguage: "es",
+      author: { "@type": "Organization", name: strings.site.autor },
+      publisher: { "@type": "Organization", name: strings.site.autor },
     })} />
   </head>
   <body>
@@ -71,26 +68,67 @@ const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
   </body>
 </html>
 
-<style is:global>
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border-width: 0;
-  }
-  .focus\:not-sr-only:focus {
-    position: fixed;
-    width: auto;
-    height: auto;
-    padding: 0.5rem 1rem;
-    margin: 0;
-    overflow: visible;
-    clip: auto;
-    white-space: normal;
-  }
-</style>
+<script>
+  // ponytail: tabs ARIA unificados — un solo handler para EjesTabs y BrainViewer
+  const initTabs = () => {
+    document.querySelectorAll<HTMLElement>("[data-tabs]").forEach((root) => {
+      const triggers = root.querySelectorAll<HTMLButtonElement>("[data-tab-trigger]");
+      const panels = root.querySelectorAll<HTMLElement>("[data-tab-panel]");
+      if (!triggers.length) return;
+
+      const activate = (id: string) => {
+        let orbit: string | undefined;
+        triggers.forEach((t) => {
+          const on = t.dataset.tabTrigger === id;
+          t.setAttribute("aria-selected", String(on));
+          t.tabIndex = on ? 0 : -1;
+          t.classList.toggle("is-active", on);
+          if (on) orbit = t.dataset.orbit;
+        });
+        panels.forEach((p) => p.toggleAttribute("hidden", p.dataset.tabPanel !== id));
+        // ponytail: si un trigger lleva data-orbit, sincroniza el model-viewer del root
+        if (orbit) root.querySelector("model-viewer")?.setAttribute("camera-orbit", orbit);
+      };
+
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => activate(trigger.dataset.tabTrigger!));
+        trigger.addEventListener("keydown", (e) => {
+          const list = [...triggers];
+          const i = list.indexOf(trigger);
+          const next =
+            e.key === "ArrowRight" ? (i + 1) % list.length :
+            e.key === "ArrowLeft" ? (i - 1 + list.length) % list.length :
+            e.key === "Home" ? 0 :
+            e.key === "End" ? list.length - 1 : -1;
+          if (next < 0) return;
+          e.preventDefault();
+          list[next].focus();
+          activate(list[next].dataset.tabTrigger!);
+        });
+      });
+    });
+  };
+
+  // ponytail: model-viewer (~300KB) solo se carga cuando BrainViewer entra en viewport
+  const initModelViewer = () => {
+    const targets = document.querySelectorAll("model-viewer");
+    if (!targets.length) return;
+    const load = () => {
+      if (document.querySelector("script[data-mv]")) return;
+      const s = document.createElement("script");
+      s.type = "module";
+      s.src = "https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js";
+      s.dataset.mv = "1";
+      document.head.appendChild(s);
+    };
+    if (!("IntersectionObserver" in window)) { load(); return; }
+    const io = new IntersectionObserver((es) => {
+      if (es.some((e) => e.isIntersecting)) { load(); io.disconnect(); }
+    }, { rootMargin: "200px" });
+    targets.forEach((el) => io.observe(el));
+  };
+
+  const init = () => { initTabs(); initModelViewer(); };
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

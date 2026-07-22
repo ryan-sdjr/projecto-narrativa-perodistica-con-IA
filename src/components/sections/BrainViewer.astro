@@ -1,79 +1,197 @@
 ---
-import BlurFade from "../motion/BlurFade.astro";
-import strings from "../../data/strings.json";
-import MarkdownSection from "../content/MarkdownSection.astro";
-import { getEntry, render } from "astro:content";
+import Reveal from "../motion/Reveal.astro";
+import brain from "../../data/brain.json";
 
-const entry = await getEntry("site", "brain-viewer");
-if (!entry) throw new Error("Falta brain-viewer.md en src/content/site/");
-const { Content: BrainContent } = await render(entry);
-
-// ponytail: BASE_URL llega sin "/" final cuando --base no lo trae (Actions)
-const base = import.meta.env.BASE_URL.replace(/\/?$/, "/");
+const { ejes } = brain;
+const base = import.meta.env.BASE_URL.replace(/\/?$/, "/"); // ponytail: --base sin trailing slash
+const defaultOrbit = ejes[0].orbit;
 ---
 
-<section
-  id="cerebro"
-  class="relative pt-4 pb-16 md:pt-6 md:pb-24"
-  aria-labelledby="brain-titulo"
->
+<section id="ejes" class="relative overflow-hidden pt-8 pb-16 md:pt-12 md:pb-24" aria-labelledby="brain-titulo">
+  <div id="cerebro" class="absolute -top-20"></div>
   <div class="container-page">
-    <div class="grid gap-10 lg:grid-cols-2 lg:gap-14 items-center">
-      <!-- Columna izquierda: contenido editable -->
-      <div class="flex flex-col justify-center order-2 lg:order-1">
-        <BlurFade as="h2" id="brain-titulo" delay={0.1} duration={0.8} class="font-display text-3xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-4xl md:text-5xl text-balance">
-          {strings.brainViewer.titulo}
-        </BlurFade>
-        <BlurFade delay={0.2} class="mt-6">
-          <div class="prose-custom">
-            <BrainContent />
+    <div class="mx-auto mb-8 max-w-3xl text-center md:mb-12">
+      <Reveal as="h2" id="brain-titulo" delay={0.1} duration={0.8} class="font-display text-3xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-4xl md:text-5xl text-balance">
+        Descripción de reacción cerebral
+      </Reveal>
+      <Reveal delay={0.15} class="mt-3 text-base text-[var(--color-muted-foreground)] text-pretty sm:text-lg">
+        Un modelo para entender cómo reacciona cada región cerebral ante la estimulación e influencia digital. Selecciona un eje para examinar su impacto.
+      </Reveal>
+    </div>
+
+    <div class="grid items-center gap-10 lg:grid-cols-12 lg:gap-14" data-tabs>
+      <div class="flex flex-col space-y-6 lg:col-span-7">
+        <Reveal delay={0.2}>
+          <div role="tablist" aria-label="Selección de eje de reacción cerebral" class="inline-flex flex-wrap items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-muted)_60%,transparent)] p-1.5 shadow-sm">
+            <div class="flex flex-wrap items-center gap-1 sm:gap-2">
+              {ejes.map((eje, i) => (
+                <button
+                  type="button"
+                  role="tab"
+                  id={`brain-tab-${eje.id}`}
+                  aria-controls={`brain-panel-${eje.id}`}
+                  aria-selected={i === 0 ? "true" : "false"}
+                  tabindex={i === 0 ? 0 : -1}
+                  data-tab-trigger={eje.id}
+                  data-orbit={eje.orbit}
+                  class={`brain-tab-btn rounded-full px-5 py-2.5 text-sm font-semibold sm:text-base ${
+                    i === 0
+                      ? "bg-[var(--color-primary)] text-[var(--color-primary-foreground)] shadow-md"
+                      : "text-[var(--color-foreground)] hover:bg-[color-mix(in_oklab,var(--color-muted)_80%,transparent)]"
+                  }`}
+                >
+                  Eje {eje.numero}
+                </button>
+              ))}
+            </div>
           </div>
-        </BlurFade>
-        <BlurFade delay={0.3} class="mt-6 flex items-center gap-2 text-xs text-[var(--color-muted-foreground)]">
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M12 2v4"/><path d="m6.4 7.4-2.8-2.8"/><path d="M2 12h4"/><path d="m6.4 16.6-2.8 2.8"/><path d="M12 22v-4"/><path d="m17.6 16.6 2.8 2.8"/><path d="M22 12h-4"/><path d="m17.6 7.4 2.8-2.8"/>
-          </svg>
-          {strings.brainViewer.descripcion}
-        </BlurFade>
+        </Reveal>
+
+        {ejes.map((eje, i) => (
+          <div
+            role="tabpanel"
+            id={`brain-panel-${eje.id}`}
+            aria-labelledby={`brain-tab-${eje.id}`}
+            data-tab-panel={eje.id}
+            hidden={i !== 0}
+            class="brain-panel space-y-4 pt-2"
+          >
+            <div>
+              <h3 class="font-display text-2xl font-bold tracking-tight text-[var(--color-foreground)] sm:text-3xl">Eje {eje.numero}: {eje.subtitulo}</h3>
+              <p class="mt-1 text-sm font-medium text-[var(--color-accent)]">Ubicación: {eje.zona}</p>
+            </div>
+            <p class="text-base leading-relaxed text-[var(--color-foreground)] sm:text-lg">{eje.resumen} {eje.descripcion}</p>
+            <p class="text-sm leading-relaxed text-[var(--color-muted-foreground)] sm:text-base">
+              <strong class="font-semibold text-[var(--color-foreground)]">Dato neurobiológico:</strong> {eje.datoTexto}
+            </p>
+          </div>
+        ))}
+
+        <Reveal delay={0.3} class="pt-2">
+          <p class="text-xs leading-relaxed text-[var(--color-muted-foreground)]">
+            <strong class="font-semibold text-[var(--color-foreground)]">⚠️ Nota:</strong> este modelo 3D es <em>ilustrativo y esquemático</em>. No representa precisión milimétrica de las activaciones reales.
+          </p>
+        </Reveal>
       </div>
 
-      <!-- Columna derecha: cerebro 3D centrado vertical y horizontalmente -->
-      <BlurFade delay={0.15} duration={1.0} class="order-1 lg:order-2 flex items-center justify-center my-auto w-full">
-        <div
-          class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-muted)] to-[var(--color-card)] shadow-xl flex items-center justify-center"
-        >
+      <Reveal delay={0.2} duration={0.9} class="flex w-full items-center justify-center lg:col-span-5">
+        <div class="relative flex aspect-square w-full max-w-md items-center justify-center overflow-hidden rounded-3xl bg-[color-mix(in_oklab,var(--color-card)_25%,transparent)] lg:max-w-none">
           <model-viewer
+            id="brain-model-viewer"
             src={`${base}models/brain_3d.glb`}
             alt="Modelo 3D interactivo de un cerebro"
-            auto-rotate
             camera-controls
             touch-action="pan-y"
             shadow-intensity="1.2"
             shadow-softness="0.8"
             exposure="1"
-            environment-image="neutral"
             tone-mapping="neutral"
-            bounds="tight"
-            camera-target="auto auto auto"
+            camera-orbit={defaultOrbit}
             class="h-full w-full"
-            style="background-color: transparent; width: 100%; height: 100%;"
-          >
-          </model-viewer>
-
-          <!-- Indicador 360° -->
-          <div class="pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_85%,transparent)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--color-muted-foreground)] backdrop-blur-sm">
-            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]"></span>
-            360°
-          </div>
-
-          <!-- Hint "Arrastra para rotar" -->
-          <div
-            class="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_90%,transparent)] px-3 py-1.5 text-xs font-medium text-[var(--color-foreground)] opacity-90 backdrop-blur-sm"
-          >
-            Arrastra para rotar
+            style="background-color: transparent; min-height: 320px;"
+          ></model-viewer>
+          <div class="pointer-events-none absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_85%,transparent)] px-3.5 py-1 text-xs font-medium text-[var(--color-foreground)] opacity-90 shadow-sm backdrop-blur-sm">
+            <span>Arrastra para rotar 360°</span>
           </div>
         </div>
-      </BlurFade>
+      </Reveal>
     </div>
   </div>
 </section>
+
+<script>
+  const initBrainViewerTabs = () => {
+    const root = document.querySelector<HTMLElement>("[data-tabs]");
+    if (!root) return;
+
+    const triggers = root.querySelectorAll<HTMLButtonElement>("[data-tab-trigger]");
+    const panels = root.querySelectorAll<HTMLElement>("[data-tab-panel]");
+    const modelViewer = root.querySelector<any>("#brain-model-viewer");
+
+    const activate = (id: string) => {
+      let activeOrbit = "0deg 75deg 105%";
+
+      triggers.forEach((trigger) => {
+        const isActive = trigger.dataset.tabTrigger === id;
+
+        trigger.setAttribute("aria-selected", String(isActive));
+        trigger.tabIndex = isActive ? 0 : -1;
+
+        if (isActive) {
+          activeOrbit = trigger.dataset.orbit || activeOrbit;
+
+          // Asignar colores activos al botón
+          trigger.classList.add(
+            "bg-[var(--color-primary)]",
+            "text-[var(--color-primary-foreground)]",
+            "shadow-md"
+          );
+          trigger.classList.remove(
+            "text-[var(--color-foreground)]",
+            "bg-transparent"
+          );
+        } else {
+          // Remover colores activos del botón deseleccionado
+          trigger.classList.remove(
+            "bg-[var(--color-primary)]",
+            "text-[var(--color-primary-foreground)]",
+            "shadow-md"
+          );
+          trigger.classList.add(
+            "text-[var(--color-foreground)]",
+            "bg-transparent"
+          );
+        }
+      });
+
+      // Animación Tween suave del panel de información
+      panels.forEach((panel) => {
+        const isActive = panel.dataset.tabPanel === id;
+        if (isActive) {
+          panel.removeAttribute("hidden");
+          panel.animate(
+            [
+              { opacity: 0, transform: "translateY(12px) scale(0.98)" },
+              { opacity: 1, transform: "translateY(0) scale(1)" }
+            ],
+            { duration: 380, easing: "cubic-bezier(0.16, 1, 0.3, 1)" }
+          );
+        } else {
+          panel.setAttribute("hidden", "");
+        }
+      });
+
+      // Transición suave de la cámara 3D
+      if (modelViewer && activeOrbit) {
+        try {
+          modelViewer.setAttribute("camera-orbit", activeOrbit);
+        } catch (e) {
+          // Fallback
+        }
+      }
+    };
+
+    triggers.forEach((trigger) => {
+      trigger.addEventListener("click", () => {
+        activate(trigger.dataset.tabTrigger!);
+      });
+
+      trigger.addEventListener("keydown", (e: KeyboardEvent) => {
+        const list = Array.from(triggers);
+        const idx = list.indexOf(trigger);
+        let next = idx;
+        if (e.key === "ArrowRight") next = (idx + 1) % list.length;
+        else if (e.key === "ArrowLeft") next = (idx - 1 + list.length) % list.length;
+        else if (e.key === "Home") next = 0;
+        else if (e.key === "End") next = list.length - 1;
+        else return;
+        e.preventDefault();
+        list[next].focus();
+        activate(list[next].dataset.tabTrigger!);
+      });
+    });
+  };
+
+  initBrainViewerTabs();
+  document.addEventListener("astro:page-load", initBrainViewerTabs);
+</script>

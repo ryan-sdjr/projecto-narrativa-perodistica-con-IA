@@ -1,189 +1,99 @@
 ---
 ---
 
-<div id="shader-bg-root" class="fixed inset-0 pointer-events-none z-[-20] overflow-hidden">
+<div id="shader-bg-root" class="fixed inset-0 pointer-events-none -z-20 overflow-hidden">
   <canvas id="shader-canvas" class="h-full w-full block transition-opacity duration-700 opacity-100"></canvas>
-  <!-- Capa de superposición negra al 80% de opacidad para un fondo oscuro y elegante -->
-  <div id="shader-overlay" class="fixed inset-0 bg-black/80 pointer-events-none z-[-10] transition-opacity duration-700 opacity-100" aria-hidden="true"></div>
+  <div id="shader-overlay" class="fixed inset-0 bg-black/80 pointer-events-none -z-10 transition-opacity duration-700 opacity-100" aria-hidden="true"></div>
 </div>
 
 <script>
+  // ponytail: shader de fondo (WebGL). Apagado por defecto si el usuario prefiere menos movimiento
+  const KEY = "shader-enabled";
+
   const initShader = () => {
     const root = document.getElementById("shader-bg-root");
     const canvas = document.getElementById("shader-canvas") as HTMLCanvasElement | null;
-    const overlay = document.getElementById("shader-overlay") as HTMLDivElement | null;
+    const overlay = document.getElementById("shader-overlay");
     if (!root || !canvas) return;
 
-    const gl = canvas.getContext("webgl") || (canvas.getContext("experimental-webgl") as WebGLRenderingContext | null);
-    if (!gl) {
-      console.warn("WebGL no soportado. Desactivando shader de fondo.");
-      canvas.style.display = "none";
-      if (overlay) overlay.style.display = "none";
-      return;
-    }
+    const gl = canvas.getContext("webgl") as WebGLRenderingContext | null;
+    if (!gl) { canvas.style.display = overlay!.style.display = "none"; return; }
 
-    // Shaders GLSL basados en Shadertoy lX2GDR - Movimiento lento y tonos profundos y oscuros
-    const vsSource = `
-      attribute vec2 a_position;
-      void main() {
-        gl_Position = vec4(a_position, 0.0, 1.0);
-      }
-    `;
-
-    const fsSource = `
+    const vs = `attribute vec2 a_position;void main(){gl_Position=vec4(a_position,0.,1.);}`;
+    const fs = `
       precision highp float;
       uniform vec2 u_resolution;
       uniform float u_time;
+      void main(){
+        vec2 uv=(gl_FragCoord.xy*2.-u_resolution)/min(u_resolution.y,u_resolution.x);
+        float d=-u_time*.07,a=0.;
+        for(float i=0.;i<8.;++i){a+=cos(i-d-a*uv.x);d+=sin(uv.y*i+a);}
+        d+=u_time*.07;
+        float t=cos(a+d)*.5+.5,t2=sin(d*.8+uv.x*1.5)*.5+.5,t3=cos(a*.7-uv.y*1.5)*.5+.5;
+        vec3 c=mix(vec3(.04,.02,.015),vec3(.35,.15,.05),t*.6);
+        c=mix(c,vec3(.45,.20,.07),t2*.5);
+        c=mix(c,vec3(.55,.28,.10),pow(t3*t,3.)*.4);
+        gl_FragColor=vec4(c,1.);
+      }`;
 
-      void main() {
-        vec2 fragCoord = gl_FragCoord.xy;
-        vec2 uv = (fragCoord * 2.0 - u_resolution.xy) / min(u_resolution.y, u_resolution.x);
-
-        // Movimiento significativamente más lento
-        float d = -u_time * 0.07;
-        float a = 0.0;
-
-        for (float i = 0.0; i < 8.0; ++i) {
-          a += cos(i - d - a * uv.x);
-          d += sin(uv.y * i + a);
-        }
-
-        d += u_time * 0.07;
-
-        // Mapeo de color con tonos cobre/ámbar profundos y muy oscuros
-        float t = cos(a + d) * 0.5 + 0.5;
-        float t2 = sin(d * 0.8 + uv.x * 1.5) * 0.5 + 0.5;
-        float t3 = cos(a * 0.7 - uv.y * 1.5) * 0.5 + 0.5;
-
-        vec3 colDeepDark = vec3(0.04, 0.02, 0.015);     // Fondo ultra oscuro
-        vec3 colTerracotta = vec3(0.35, 0.15, 0.05);   // Cobre oscuro tenue
-        vec3 colAmber = vec3(0.45, 0.20, 0.07);        // Ámbar tenue
-        vec3 colWarmHighlight = vec3(0.55, 0.28, 0.10); // Destello ámbar muy suave
-
-        vec3 col = mix(colDeepDark, colTerracotta, t * 0.6);
-        col = mix(col, colAmber, t2 * 0.5);
-        col = mix(col, colWarmHighlight, pow(t3 * t, 3.0) * 0.4);
-
-        gl_FragColor = vec4(col, 1.0);
-      }
-    `;
-
-    const createShader = (type: number, source: string) => {
-      const shader = gl.createShader(type);
-      if (!shader) return null;
-      gl.shaderSource(shader, source);
-      gl.compileShader(shader);
-      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-        console.error(gl.getShaderInfoLog(shader));
-        gl.deleteShader(shader);
-        return null;
-      }
-      return shader;
+    const mk = (t: number, s: string) => {
+      const sh = gl.createShader(t)!;
+      gl.shaderSource(sh, s); gl.compileShader(sh);
+      return gl.getShaderParameter(sh, gl.COMPILE_STATUS) ? sh : null;
     };
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, mk(gl.VERTEX_SHADER, vs)!);
+    gl.attachShader(prog, mk(gl.FRAGMENT_SHADER, fs)!);
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
 
-    const vertShader = createShader(gl.VERTEX_SHADER, vsSource);
-    const fragShader = createShader(gl.FRAGMENT_SHADER, fsSource);
-    if (!vertShader || !fragShader) return;
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1,1,-1,-1,1,1,1]), gl.STATIC_DRAW);
+    const pos = gl.getAttribLocation(prog, "a_position");
+    gl.enableVertexAttribArray(pos);
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0);
 
-    const program = gl.createProgram();
-    if (!program) return;
-    gl.attachShader(program, vertShader);
-    gl.attachShader(program, fragShader);
-    gl.linkProgram(program);
-    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
-      console.error(gl.getProgramInfoLog(program));
-      return;
-    }
-
-    gl.useProgram(program);
-
-    const positionBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-      -1, -1,
-       1, -1,
-      -1,  1,
-       1,  1,
-    ]), gl.STATIC_DRAW);
-
-    const positionLocation = gl.getAttribLocation(program, "a_position");
-    gl.enableVertexAttribArray(positionLocation);
-    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-    const resolutionLoc = gl.getUniformLocation(program, "u_resolution");
-    const timeLoc = gl.getUniformLocation(program, "u_time");
-
-    let animationFrameId = 0;
-    let startTime = performance.now();
-    let isRunning = false;
+    const res = gl.getUniformLocation(prog, "u_resolution");
+    const tim = gl.getUniformLocation(prog, "u_time");
+    const t0 = performance.now();
+    let raf = 0, running = false;
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
-      const width = Math.floor(window.innerWidth * dpr);
-      const height = Math.floor(window.innerHeight * dpr);
-
-      if (canvas.width !== width || canvas.height !== height) {
-        canvas.width = width;
-        canvas.height = height;
-        gl.viewport(0, 0, width, height);
-      }
+      const w = Math.floor(innerWidth * dpr), h = Math.floor(innerHeight * dpr);
+      if (canvas.width !== w) { canvas.width = w; canvas.height = h; gl.viewport(0, 0, w, h); }
     };
 
-    const renderFrame = (now: number) => {
-      if (!isRunning) return;
+    const frame = (now: number) => {
+      if (!running) return;
       resize();
-      const elapsed = (now - startTime) * 0.001;
-
-      gl.uniform2f(resolutionLoc, canvas.width, canvas.height);
-      gl.uniform1f(timeLoc, elapsed);
-
+      gl.uniform2f(res, canvas.width, canvas.height);
+      gl.uniform1f(tim, (now - t0) * 0.001);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-      animationFrameId = requestAnimationFrame(renderFrame);
+      raf = requestAnimationFrame(frame);
     };
 
-    const start = () => {
-      if (isRunning) return;
-      isRunning = true;
-      canvas.style.opacity = "1";
-      if (overlay) overlay.style.opacity = "1";
-      animationFrameId = requestAnimationFrame(renderFrame);
+    const start = () => { if (running) return; running = true; canvas.style.opacity = overlay!.style.opacity = "1"; raf = requestAnimationFrame(frame); };
+    const stop  = () => { running = false; canvas.style.opacity = overlay!.style.opacity = "0"; cancelAnimationFrame(raf); };
+
+    const sync = () => {
+      const stored = localStorage.getItem(KEY);
+      const on = stored !== null ? stored === "true" : !matchMedia("(prefers-reduced-motion: reduce)").matches;
+      on ? start() : stop();
+      dispatchEvent(new CustomEvent("shader-state-changed", { detail: { enabled: on } }));
     };
 
-    const stop = () => {
-      isRunning = false;
-      canvas.style.opacity = "0";
-      if (overlay) overlay.style.opacity = "0"; // Oculta el bloque negro para restaurar el color de fondo original
-      if (animationFrameId) {
-        cancelAnimationFrame(animationFrameId);
-        animationFrameId = 0;
-      }
-    };
-
-    const checkState = () => {
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const stored = localStorage.getItem("shader-enabled");
-      const enabled = stored !== null ? stored === "true" : !reducedMotion;
-
-      if (enabled) {
-        start();
-      } else {
-        stop();
-      }
-      window.dispatchEvent(new CustomEvent("shader-state-changed", { detail: { enabled } }));
-    };
-
-    window.addEventListener("toggle-shader-event", () => {
-      const stored = localStorage.getItem("shader-enabled");
-      const currentState = stored !== null ? stored === "true" : !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const newState = !currentState;
-      localStorage.setItem("shader-enabled", String(newState));
-      checkState();
+    addEventListener("toggle-shader-event", () => {
+      const current = localStorage.getItem(KEY);
+      const next = current === null ? !matchMedia("(prefers-reduced-motion: reduce)").matches : current === "false";
+      localStorage.setItem(KEY, String(next));
+      sync();
     });
-
-    window.addEventListener("resize", resize);
-    checkState();
+    addEventListener("resize", resize);
+    sync();
   };
-
   initShader();
   document.addEventListener("astro:page-load", initShader);
 </script>

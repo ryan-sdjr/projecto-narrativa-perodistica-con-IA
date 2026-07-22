@@ -1,26 +1,12 @@
 ---
 import MarkdownSection from "../content/MarkdownSection.astro";
-import BlurFade from "../motion/BlurFade.astro";
 ---
 
-<section
-  id="bibliografia"
-  class="relative py-16 md:py-24"
-  aria-labelledby="biblio-titulo"
->
-  <!-- Separador elegante con gradiente tenue -->
-  <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent pointer-events-none" aria-hidden="true"></div>
-
+<section id="bibliografia" class="relative py-16 md:py-24" aria-labelledby="biblio-titulo">
+  <div class="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-[var(--color-accent)]/40 to-transparent" aria-hidden="true"></div>
   <div class="container-page">
     <div class="mx-auto max-w-4xl">
       <MarkdownSection slug="bibliography" />
     </div>
   </div>
-
-  <footer class="container-page mt-20 border-t border-[var(--color-border)] pt-8">
-    <div class="flex flex-col items-center justify-between gap-4 text-center text-sm text-[var(--color-muted-foreground)] sm:flex-row sm:text-left">
-      <p>© {new Date().getFullYear()} Universidad Autónoma del Perú. Artículo informativo.</p>
-      <p class="text-xs">Construido con Astro · Hecho con propósito educativo</p>
-    </div>
-  </footer>
 </section>

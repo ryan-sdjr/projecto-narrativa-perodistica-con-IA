@@ -1,6 +1,5 @@
 ---
 id: brain-viewer
-slug: brain-viewer
 titulo: "Descripción de reacción cerebral"
 orden: 6
 oculto: false

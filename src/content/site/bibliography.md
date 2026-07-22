@@ -1,6 +1,5 @@
 ---
 id: bibliography
-slug: bibliography
 titulo: "Bibliografía"
 orden: 8
 oculto: false
@@ -14,7 +13,3 @@ oculto: false
 - **Orben, A., & Przybylski, A. K.** (2019). The psychology of social network use. *Nature Human Behaviour*, 3, 107-115.
 - **Crone, E. A., & Dahl, R. E.** (2012). Understanding adolescence as a period of social–affective engagement and goal flexibility. *Nature Reviews Neuroscience*, 13(9), 636-650.
 - **Skinner, B. F.** (1953). *Science and Human Behavior*. Macmillan.
-
----
-> *Nota del desarrollador:*
-> *Para agregar o quitar referencias, edita las líneas con `-` debajo del título `## Referencias`. Usa el formato Markdown estándar de lista.*

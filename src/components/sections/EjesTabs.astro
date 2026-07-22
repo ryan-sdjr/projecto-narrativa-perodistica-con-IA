@@ -1,48 +1,24 @@
 ---
 import { getCollection, render } from "astro:content";
-import BlurFade from "../motion/BlurFade.astro";
+import Reveal from "../motion/Reveal.astro";
 import strings from "../../data/strings.json";
-import MarkdownSection from "../content/MarkdownSection.astro";
 
-const ejes = (await getCollection("site", ({ id }) => id.startsWith("ejes/"))).sort(
-  (a, b) => a.data.orden - b.data.orden
-);
-
-const ejesData = await Promise.all(
-  ejes.map(async (eje) => {
-    const { Content } = await render(eje);
-    return { entry: eje, Content };
-  })
-);
-
-const tabsLabels: Record<string, string> = {
-  "eje-1": strings.tabs.eje1,
-  "eje-2": strings.tabs.eje2,
-  "eje-3": strings.tabs.eje3,
-};
+const ejes = (await getCollection("site", ({ id }) => id.startsWith("ejes/"))).sort((a, b) => a.data.orden - b.data.orden);
+const paneles = await Promise.all(ejes.map(async (e) => ({ entry: e, Content: (await render(e)).Content })));
 ---
 
-<section
-  id="ejes"
-  class="relative pt-16 pb-8 md:pt-24 md:pb-12"
-  aria-labelledby="ejes-titulo"
->
+<section id="ejes" class="relative pt-16 pb-8 md:pt-24 md:pb-12" aria-labelledby="ejes-titulo">
   <div class="container-page">
-    <BlurFade as="h2" id="ejes-titulo" duration={0.7} class="text-center font-display text-3xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-4xl md:text-5xl">
+    <Reveal as="h2" id="ejes-titulo" duration={0.7} class="text-center font-display text-3xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-4xl md:text-5xl">
       3 ejes principales
-    </BlurFade>
-    <BlurFade delay={0.15} class="mx-auto mt-4 max-w-2xl text-center text-[var(--color-muted-foreground)]">
+    </Reveal>
+    <Reveal delay={0.15} class="mx-auto mt-4 max-w-2xl text-center text-[var(--color-muted-foreground)]">
       Toca cada eje para descubrir la biología que hay detrás de la vulnerabilidad adolescente.
-    </BlurFade>
+    </Reveal>
 
-    <div class="mt-10 md:mt-14" data-ejes-tabs>
-      <!-- Tab list -->
-      <div
-        role="tablist"
-        aria-label={strings.tabs.ariaLabel}
-        class="flex flex-wrap justify-center gap-2 sm:gap-3"
-      >
-        {ejesData.map(({ entry }, i) => (
+    <div class="mt-10 md:mt-14" data-tabs>
+      <div role="tablist" aria-label={strings.tabs.ariaLabel} class="flex flex-wrap justify-center gap-2 sm:gap-3">
+        {paneles.map(({ entry }, i) => (
           <button
             type="button"
             role="tab"
@@ -51,22 +27,20 @@ const tabsLabels: Record<string, string> = {
             aria-selected={i === 0 ? "true" : "false"}
             tabindex={i === 0 ? 0 : -1}
             data-tab-trigger={entry.id}
-            class={`eje-tab group relative inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold transition-all duration-300 sm:text-base ${
+            class={`eje-tab relative inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm font-semibold sm:text-base ${
               i === 0
-                ? "eje-tab-active border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)] shadow-md"
+                ? "border-[var(--color-primary)] bg-[var(--color-primary)] text-[var(--color-primary-foreground)] shadow-md"
                 : "border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)] hover:border-[var(--color-accent)] hover:bg-[var(--color-muted)]"
             }`}
           >
-            <span class="grid h-6 w-6 place-items-center rounded-full text-xs font-bold"
-              data-tab-indicator>{tabsLabels[entry.data.id]?.replace(/^Eje\s/i, "") ?? (i + 1)}</span>
+            <span class="grid h-6 w-6 place-items-center rounded-full text-xs font-bold">{i + 1}</span>
             <span>Eje {i + 1}</span>
           </button>
         ))}
       </div>
 
-      <!-- Panels -->
       <div class="mt-8 md:mt-12">
-        {ejesData.map(({ entry, Content }, i) => (
+        {paneles.map(({ entry, Content }, i) => (
           <div
             role="tabpanel"
             id={`panel-${entry.id}`}
@@ -77,23 +51,13 @@ const tabsLabels: Record<string, string> = {
           >
             <div class="mx-auto max-w-3xl rounded-2xl border border-[var(--color-border)] bg-[var(--color-card)] p-6 shadow-sm sm:p-8 md:p-10">
               <div class="mb-4 flex items-start gap-3">
-                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--color-accent)] text-sm font-bold text-[var(--color-accent-foreground)]">
-                  {i + 1}
-                </span>
+                <span class="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[var(--color-accent)] text-sm font-bold text-[var(--color-accent-foreground)]">{i + 1}</span>
                 <div>
-                  <h3 class="font-display text-2xl font-semibold text-[var(--color-foreground)] sm:text-3xl">
-                    {entry.data.titulo}
-                  </h3>
-                  {entry.data.subtitulo && (
-                    <p class="mt-1 text-sm font-medium text-[var(--color-accent)] sm:text-base">
-                      {entry.data.subtitulo}
-                    </p>
-                  )}
+                  <h3 class="font-display text-2xl font-semibold text-[var(--color-foreground)] sm:text-3xl">{entry.data.titulo}</h3>
+                  {entry.data.subtitulo && <p class="mt-1 text-sm font-medium text-[var(--color-accent)] sm:text-base">{entry.data.subtitulo}</p>}
                 </div>
               </div>
-              <div class="prose-custom">
-                <Content />
-              </div>
+              <div class="prose-custom"><Content /></div>
             </div>
           </div>
         ))}
@@ -101,68 +65,3 @@ const tabsLabels: Record<string, string> = {
     </div>
   </div>
 </section>
-
-<script>
-  const init = () => {
-    const root = document.querySelector<HTMLElement>("[data-ejes-tabs]");
-    if (!root) return;
-
-    const triggers = root.querySelectorAll<HTMLButtonElement>("[data-tab-trigger]");
-    const panels = root.querySelectorAll<HTMLElement>("[data-tab-panel]");
-
-    const activate = (id: string) => {
-      triggers.forEach((trigger) => {
-        const isActive = trigger.dataset.tabTrigger === id;
-        trigger.setAttribute("aria-selected", String(isActive));
-        trigger.tabIndex = isActive ? 0 : -1;
-        trigger.classList.toggle("eje-tab-active", isActive);
-        trigger.classList.toggle("border-[var(--color-primary)]", isActive);
-        trigger.classList.toggle("bg-[var(--color-primary)]", isActive);
-        trigger.classList.toggle("text-[var(--color-primary-foreground)]", isActive);
-        trigger.classList.toggle("shadow-md", isActive);
-        trigger.classList.toggle("border-[var(--color-border)]", !isActive);
-        trigger.classList.toggle("bg-[var(--color-card)]", !isActive);
-        trigger.classList.toggle("text-[var(--color-foreground)]", !isActive);
-        trigger.classList.toggle("hover:border-[var(--color-accent)]", !isActive);
-        trigger.classList.toggle("hover:bg-[var(--color-muted)]", !isActive);
-      });
-
-      panels.forEach((panel) => {
-        const isActive = panel.dataset.tabPanel === id;
-        if (isActive) {
-          panel.removeAttribute("hidden");
-          panel.animate(
-            [
-              { opacity: 0, transform: "translateY(8px)" },
-              { opacity: 1, transform: "translateY(0)" },
-            ],
-            { duration: 380, easing: "cubic-bezier(0.22, 1, 0.36, 1)" }
-          );
-        } else {
-          panel.setAttribute("hidden", "");
-        }
-      });
-    };
-
-    triggers.forEach((trigger) => {
-      trigger.addEventListener("click", () => {
-        activate(trigger.dataset.tabTrigger!);
-      });
-      trigger.addEventListener("keydown", (e: KeyboardEvent) => {
-        const list = Array.from(triggers);
-        const idx = list.indexOf(trigger);
-        let next = idx;
-        if (e.key === "ArrowRight") next = (idx + 1) % list.length;
-        else if (e.key === "ArrowLeft") next = (idx - 1 + list.length) % list.length;
-        else if (e.key === "Home") next = 0;
-        else if (e.key === "End") next = list.length - 1;
-        else return;
-        e.preventDefault();
-        list[next].focus();
-        activate(list[next].dataset.tabTrigger!);
-      });
-    });
-  };
-  init();
-  document.addEventListener("astro:page-load", init);
-</script>

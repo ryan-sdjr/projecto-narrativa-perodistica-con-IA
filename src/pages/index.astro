@@ -1,14 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import ShaderBackground from "../components/ui/ShaderBackground.astro";
+import ShaderToggle from "../components/ui/ShaderToggle.astro";
 import Header from "../components/sections/Header.astro";
 import Hero from "../components/sections/Hero.astro";
 import Intro from "../components/sections/Intro.astro";
-import EjesTabs from "../components/sections/EjesTabs.astro";
 import BrainViewer from "../components/sections/BrainViewer.astro";
 import Conclusions from "../components/sections/Conclusions.astro";
 import Bibliography from "../components/sections/Bibliography.astro";
-import ShaderBackground from "../components/ui/ShaderBackground.astro";
-import ShaderToggle from "../components/ui/ShaderToggle.astro";
+import VideoSection from "../components/sections/VideoSection.astro";
 ---
 
 <BaseLayout>
@@ -17,10 +17,10 @@ import ShaderToggle from "../components/ui/ShaderToggle.astro";
   <main class="relative z-10">
     <Hero />
     <Intro />
-    <EjesTabs />
     <BrainViewer />
     <Conclusions />
     <Bibliography />
+    <VideoSection />
   </main>
   <ShaderToggle />
 </BaseLayout>

@@ -1,0 +1,34 @@
+{
+  "ejes": [
+    {
+      "id": "eje-1",
+      "numero": 1,
+      "subtitulo": "Corteza Prefrontal",
+      "zona": "Parte delantera (detrás de la frente)",
+      "orbit": "0deg 75deg 105%",
+      "resumen": "La zona frontal pierde actividad ante la presión temporal o contenido impulsivo.",
+      "descripcion": "La corteza prefrontal es la responsable del juicio crítico, la planificación y el control de impulsos. Ante mensajes de urgencia o manipulación emocional, esta área reduce drásticamente su actividad ejecutiva.",
+      "datoTexto": "La saturación por decisiones rápidas inhibe la corteza prefrontal dorsolateral, provocando respuestas reactivas antes del análisis lógico."
+    },
+    {
+      "id": "eje-2",
+      "numero": 2,
+      "subtitulo": "Sistema de Recompensa",
+      "zona": "Profundidad central (Núcleo Accumbens)",
+      "orbit": "45deg 70deg 90%",
+      "resumen": "El núcleo accumbens se hiperactiva mediante micro-recompensas intermitentes.",
+      "descripcion": "El núcleo accumbens se ubica en la profundidad del cerebro y gestiona los circuitos de dopamina y motivación. Las notificaciones y reacciones digitales lo mantienen activo en ciclos impredecibles.",
+      "datoTexto": "El refuerzo intermitente (likes y alertas aleatorias) estimula la liberación periódica de dopamina, consolidando hábitos de verificación compulsiva."
+    },
+    {
+      "id": "eje-3",
+      "numero": 3,
+      "subtitulo": "Neuroplasticidad Digital",
+      "zona": "Corteza completa y redes atencionales",
+      "orbit": "120deg 60deg 115%",
+      "resumen": "Los patrones de consumo prolongado reconfiguran las redes atencionales de la corteza.",
+      "descripcion": "Los cambios neuroplásticos por uso digital continuo afectan la corteza en su totalidad, transformando los circuitos dedicados a la atención sostenida y el procesamiento socioemocional.",
+      "datoTexto": "La exposición continua a multitarea rápida fragmenta el foco atencional y modifica el procesamiento de microexpresiones en interacciones sociales."
+    }
+  ]
+}

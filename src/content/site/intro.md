@@ -1,6 +1,5 @@
 ---
 id: intro
-slug: intro
 titulo: "Introducción"
 orden: 2
 oculto: false

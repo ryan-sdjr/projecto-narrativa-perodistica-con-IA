@@ -1,6 +1,5 @@
 ---
 id: conclusions
-slug: conclusions
 titulo: "Conclusiones"
 orden: 7
 oculto: false

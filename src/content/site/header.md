@@ -1,6 +1,5 @@
 ---
 id: header
-slug: header
 titulo: "Biología o Debilidad"
 orden: 0
 oculto: true
