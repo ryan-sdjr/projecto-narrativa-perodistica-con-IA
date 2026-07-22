@@ -40,7 +40,7 @@ const { Content: BrainContent } = await render(entry);
           class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-muted)] to-[var(--color-card)] shadow-xl flex items-center justify-center"
         >
           <model-viewer
-            src="/models/brain_3d.glb"
+            src={`${import.meta.env.BASE_URL}models/brain_3d.glb`}
             alt="Modelo 3D interactivo de un cerebro"
             auto-rotate
             camera-controls
