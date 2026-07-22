@@ -3,32 +3,32 @@
     {
       "id": "eje-1",
       "numero": 1,
-      "subtitulo": "Corteza Prefrontal",
+      "subtitulo": "Corteza Prefrontal / Impulso Digital",
       "zona": "Parte delantera (detrás de la frente)",
       "orbit": "0deg 75deg 105%",
-      "resumen": "La zona frontal pierde actividad ante la presión temporal o contenido impulsivo.",
-      "descripcion": "La corteza prefrontal es la responsable del juicio crítico, la planificación y el control de impulsos. Ante mensajes de urgencia o manipulación emocional, esta área reduce drásticamente su actividad ejecutiva.",
-      "datoTexto": "La saturación por decisiones rápidas inhibe la corteza prefrontal dorsolateral, provocando respuestas reactivas antes del análisis lógico."
+      "resumen": "¿Qué pasa por tu mente cuando ves que el celular no suena o nadie reacciona a lo que subes?",
+      "descripcion": "",
+      "datoTexto": "A veces sientes que si no subes lo que los demás esperan, dejas de importarles. Te vas sintiendo chiquito... y terminas haciendo cosas solo para que no te dejen de hablar o para que no te critiquen en el colegio."
     },
     {
       "id": "eje-2",
       "numero": 2,
-      "subtitulo": "Sistema de Recompensa",
+      "subtitulo": "Amistad y Presión Social (Círculo Cercano)",
       "zona": "Profundidad central (Núcleo Accumbens)",
       "orbit": "45deg 70deg 90%",
-      "resumen": "El núcleo accumbens se hiperactiva mediante micro-recompensas intermitentes.",
-      "descripcion": "El núcleo accumbens se ubica en la profundidad del cerebro y gestiona los circuitos de dopamina y motivación. Las notificaciones y reacciones digitales lo mantienen activo en ciclos impredecibles.",
-      "datoTexto": "El refuerzo intermitente (likes y alertas aleatorias) estimula la liberación periódica de dopamina, consolidando hábitos de verificación compulsiva."
+      "resumen": "¿Alguna vez has hecho o visto algo en los chats grupales solo porque todos lo hacían, aunque por dentro sintieras que no estaba bien?",
+      "descripcion": "",
+      "datoTexto": "Te da terror decir 'no' a tus amigos o a tu pareja porque piensas que se van a enojar o te van a tildar de aburrido. Uno pasa horas viendo videos de peleas o burlas, y al final ya te da risa o te da igual. Sientes que te vas volviendo más frío, pero igual lo sigues viendo porque todos lo comentan."
     },
     {
       "id": "eje-3",
       "numero": 3,
-      "subtitulo": "Neuroplasticidad Digital",
+      "subtitulo": "El Control Afectivo y la Autoestima Digital",
       "zona": "Corteza completa y redes atencionales",
       "orbit": "120deg 60deg 115%",
-      "resumen": "Los patrones de consumo prolongado reconfiguran las redes atencionales de la corteza.",
-      "descripcion": "Los cambios neuroplásticos por uso digital continuo afectan la corteza en su totalidad, transformando los circuitos dedicados a la atención sostenida y el procesamiento socioemocional.",
-      "datoTexto": "La exposición continua a multitarea rápida fragmenta el foco atencional y modifica el procesamiento de microexpresiones en interacciones sociales."
+      "resumen": "¿Sientes que la presión de mostrar una imagen perfecta o de cumplir con exigencias de otras personas te agota?",
+      "descripcion": "",
+      "datoTexto": "Sí, porque te exigen contraseñas o saber dónde estás todo el tiempo. Te exigen estar disponible y cambiar cómo te ves para encajar en un estándar que nunca es real; al final te da miedo mostrar cómo eres de verdad."
     }
   ]
 }
