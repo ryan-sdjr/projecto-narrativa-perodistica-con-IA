@@ -1,0 +1,157 @@
+---
+import { getEntry } from "astro:content";
+import { render } from "astro:content";
+import BlurFade from "../motion/BlurFade.astro";
+
+const entry = await getEntry("site", "hero");
+if (!entry) throw new Error("Falta el archivo hero.md en src/content/site/");
+
+const { Content } = await render(entry);
+---
+
+<section
+  id="main"
+  class="relative overflow-hidden hero-grain"
+  aria-labelledby="hero-titulo"
+>
+  <div class="container-page grid gap-10 py-12 md:grid-cols-2 md:gap-12 md:py-20 lg:py-24">
+    <div class="order-2 md:order-1 flex flex-col justify-center">
+      <BlurFade as="p" delay={0.05} duration={0.6} class="text-sm font-medium uppercase tracking-[0.2em] text-[var(--color-accent)]">
+        Artículo informativo
+      </BlurFade>
+      <BlurFade as="h1" delay={0.15} duration={0.8} class="mt-4 font-display text-4xl font-semibold leading-[1.05] text-[var(--color-foreground)] sm:text-5xl md:text-6xl lg:text-7xl">
+        <span id="hero-titulo">{entry.data.titulo}</span>
+      </BlurFade>
+      <BlurFade as="p" delay={0.3} duration={0.8} class="mt-5 max-w-xl text-lg text-[var(--color-muted-foreground)] sm:text-xl">
+        {entry.data.subtitulo}
+      </BlurFade>
+      <BlurFade delay={0.45} duration={0.7} class="mt-8 flex flex-wrap items-center gap-3">
+        <a
+          href="#intro"
+          class="inline-flex items-center gap-2 rounded-full bg-[var(--color-primary)] px-5 py-3 text-sm font-semibold text-[var(--color-primary-foreground)] shadow-sm transition-all hover:scale-[1.02] hover:shadow-md active:scale-100"
+        >
+          Leer artículo
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
+          </svg>
+        </a>
+        <a
+          href="#ejes"
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-[var(--color-card)] px-5 py-3 text-sm font-semibold text-[var(--color-foreground)] transition-all hover:bg-[var(--color-muted)]"
+        >
+          Ver los 3 ejes
+        </a>
+      </BlurFade>
+    </div>
+
+    <div class="order-1 md:order-2 relative">
+      <BlurFade delay={0.2} duration={1.0} class="relative aspect-[4/3] w-full overflow-hidden rounded-3xl border border-[var(--color-border)] bg-[var(--color-card)] shadow-xl">
+        <!-- Hero illustration: dos siluetas adolescentes conversando -->
+        <svg
+          viewBox="0 0 800 600"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="Ilustración de dos adolescentes conversando"
+          class="absolute inset-0 h-full w-full"
+          preserveAspectRatio="xMidYMid slice"
+        >
+          <defs>
+            <linearGradient id="bg-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="hsl(30, 60%, 92%)"/>
+              <stop offset="100%" stop-color="hsl(20, 55%, 85%)"/>
+            </linearGradient>
+            <linearGradient id="left-fig" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="hsl(35, 35%, 78%)"/>
+              <stop offset="100%" stop-color="hsl(30, 30%, 60%)"/>
+            </linearGradient>
+            <linearGradient id="right-fig" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stop-color="hsl(120, 25%, 55%)"/>
+              <stop offset="100%" stop-color="hsl(140, 30%, 35%)"/>
+            </linearGradient>
+          </defs>
+
+          <rect width="800" height="600" fill="url(#bg-grad)"/>
+
+          <!-- Decoración: ventana con luz -->
+          <g opacity="0.5">
+            <rect x="500" y="60" width="240" height="320" rx="8" fill="hsl(45, 60%, 92%)" stroke="hsl(30, 25%, 75%)" stroke-width="3"/>
+            <line x1="620" y1="60" x2="620" y2="380" stroke="hsl(30, 25%, 75%)" stroke-width="3"/>
+            <line x1="500" y1="220" x2="740" y2="220" stroke="hsl(30, 25%, 75%)" stroke-width="3"/>
+          </g>
+
+          <!-- Suelo / sofá -->
+          <ellipse cx="400" cy="540" rx="380" ry="40" fill="hsl(25, 30%, 70%)" opacity="0.5"/>
+
+          <!-- Figura izquierda (adolescente en sweater claro) -->
+          <g>
+            <!-- Piernas -->
+            <path d="M 200 540 Q 195 480 220 420 L 260 420 Q 280 480 270 540 Z" fill="url(#left-fig)"/>
+            <!-- Cuerpo -->
+            <path d="M 180 430 Q 175 360 200 320 L 290 320 Q 305 380 290 430 Z" fill="url(#left-fig)"/>
+            <!-- Brazo hacia el centro -->
+            <path d="M 260 350 Q 320 360 360 380 L 365 400 Q 320 395 260 380 Z" fill="hsl(35, 40%, 82%)"/>
+            <!-- Cuello -->
+            <rect x="220" y="305" width="40" height="25" fill="hsl(25, 40%, 70%)"/>
+            <!-- Cabeza (perfil) -->
+            <circle cx="240" cy="270" r="42" fill="hsl(25, 45%, 72%)"/>
+            <!-- Cabello -->
+            <path d="M 200 260 Q 195 220 220 210 Q 250 195 280 215 Q 290 240 285 270 L 280 250 Q 240 235 200 260 Z" fill="hsl(20, 35%, 30%)"/>
+            <!-- Detalle oreja -->
+            <ellipse cx="200" cy="275" rx="4" ry="6" fill="hsl(25, 40%, 65%)"/>
+          </g>
+
+          <!-- Figura derecha (adolescente en sudadera verde) -->
+          <g>
+            <!-- Piernas recogidas -->
+            <path d="M 510 540 Q 505 480 530 440 L 600 440 Q 620 500 600 540 Z" fill="hsl(140, 30%, 30%)"/>
+            <!-- Cuerpo inclinado -->
+            <path d="M 490 460 Q 485 380 530 340 L 620 340 Q 640 400 615 460 Z" fill="url(#right-fig)"/>
+            <!-- Brazo con bracelets hacia el centro -->
+            <path d="M 510 380 Q 460 390 410 410 L 415 430 Q 470 425 520 405 Z" fill="hsl(140, 25%, 50%)"/>
+            <rect x="455" y="395" width="4" height="14" fill="hsl(0, 60%, 50%)" rx="1"/>
+            <rect x="465" y="397" width="4" height="14" fill="hsl(40, 80%, 55%)" rx="1"/>
+            <rect x="475" y="399" width="4" height="14" fill="hsl(200, 60%, 50%)" rx="1"/>
+            <!-- Cuello -->
+            <rect x="560" y="325" width="40" height="25" fill="hsl(25, 40%, 70%)"/>
+            <!-- Cabeza (perfil mirando a la izquierda) -->
+            <circle cx="580" cy="285" r="44" fill="hsl(25, 45%, 72%)"/>
+            <!-- Cabello largo rizado -->
+            <path d="M 540 270 Q 530 220 560 200 Q 590 185 620 200 Q 645 220 635 270 Q 640 290 625 295 Q 615 270 600 265 Q 580 260 555 270 Q 540 285 540 280 Z" fill="hsl(25, 45%, 28%)"/>
+            <!-- Rizos decorativos -->
+            <circle cx="535" cy="245" r="12" fill="hsl(25, 45%, 28%)"/>
+            <circle cx="630" cy="250" r="14" fill="hsl(25, 45%, 28%)"/>
+            <circle cx="640" cy="285" r="12" fill="hsl(25, 45%, 28%)"/>
+            <circle cx="540" cy="290" r="11" fill="hsl(25, 45%, 28%)"/>
+          </g>
+
+          <!-- Símbolos de diálogo flotantes -->
+          <g opacity="0.7">
+            <circle cx="380" cy="240" r="6" fill="hsl(200, 70%, 55%)"/>
+            <circle cx="395" cy="225" r="8" fill="hsl(200, 70%, 55%)"/>
+            <circle cx="412" cy="208" r="10" fill="hsl(200, 70%, 55%)"/>
+          </g>
+          <g opacity="0.7">
+            <circle cx="445" cy="320" r="5" fill="hsl(15, 75%, 55%)"/>
+            <circle cx="460" cy="335" r="7" fill="hsl(15, 75%, 55%)"/>
+          </g>
+        </svg>
+
+        <!-- Badge de "3 ejes temáticos" -->
+        <div class="absolute bottom-4 left-4 right-4 flex flex-wrap items-center gap-2">
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_90%,transparent)] px-3 py-1.5 text-xs font-medium text-[var(--color-foreground)] backdrop-blur-sm">
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)]"></span>
+            3 ejes temáticos
+          </span>
+          <span class="inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_90%,transparent)] px-3 py-1.5 text-xs font-medium text-[var(--color-foreground)] backdrop-blur-sm">
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-primary)]"></span>
+            Cerebro 3D interactivo
+          </span>
+        </div>
+      </BlurFade>
+
+      <!-- Floating element decorativo -->
+      <div class="absolute -bottom-6 -right-6 -z-10 h-32 w-32 rounded-full bg-[var(--color-accent)] opacity-20 blur-2xl" aria-hidden="true"></div>
+      <div class="absolute -top-6 -left-6 -z-10 h-32 w-32 rounded-full bg-[var(--color-primary)] opacity-20 blur-2xl" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>

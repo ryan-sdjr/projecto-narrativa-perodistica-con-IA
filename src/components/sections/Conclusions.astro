@@ -1,0 +1,24 @@
+---
+import MarkdownSection from "../content/MarkdownSection.astro";
+import BlurFade from "../motion/BlurFade.astro";
+---
+
+<section
+  id="conclusiones"
+  class="relative border-t-2 border-dashed border-[var(--color-border)] py-16 md:py-24"
+  aria-labelledby="conclusiones-titulo"
+>
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl">
+      <BlurFade class="mb-8 flex items-center gap-3" duration={0.6}>
+        <span class="grid h-10 w-10 place-items-center rounded-full bg-[var(--color-primary)] text-[var(--color-primary-foreground)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+        </span>
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-primary)]">Cierre</span>
+      </BlurFade>
+      <MarkdownSection slug="conclusions" />
+    </div>
+  </div>
+</section>

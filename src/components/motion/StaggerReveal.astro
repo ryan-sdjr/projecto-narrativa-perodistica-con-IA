@@ -1,0 +1,95 @@
+---
+/**
+ * StaggerReveal: aplica FadeIn con delay incremental a cada hijo directo.
+ * Útil para listas y bloques de texto.
+ *
+ * Props:
+ * - step: segundos entre cada hijo (default 0.08)
+ * - startDelay: delay inicial (default 0)
+ * - selector: selector CSS de hijos a animar (default '> *')
+ */
+interface Props {
+  step?: number;
+  startDelay?: number;
+  selector?: string;
+  class?: string;
+}
+
+const {
+  step = 0.08,
+  startDelay = 0,
+  selector = "> *",
+  class: className = "",
+} = Astro.props;
+---
+
+<div
+  data-stagger
+  data-step={step}
+  data-start={startDelay}
+  data-selector={selector}
+  class={className}
+>
+  <slot />
+</div>
+
+<script>
+  const init = () => {
+    const containers = document.querySelectorAll<HTMLElement>("[data-stagger]");
+    if (containers.length === 0) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) {
+      containers.forEach((c) => c.classList.add("is-staggered"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          const root = entry.target as HTMLElement;
+          const step = parseFloat(root.dataset.step || "0.08");
+          const start = parseFloat(root.dataset.start || "0");
+          const sel = root.dataset.selector || "> *";
+          root.querySelectorAll<HTMLElement>(sel).forEach((child, i) => {
+            child.style.setProperty("--stagger-delay", `${start + i * step}s`);
+            child.classList.add("stagger-child");
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                child.classList.add("is-visible");
+              });
+            });
+          });
+          root.classList.add("is-staggered");
+          observer.unobserve(root);
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }
+    );
+    containers.forEach((c) => observer.observe(c));
+  };
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>
+
+<style is:global>
+  [data-stagger] .stagger-child {
+    opacity: 0;
+    transform: translateY(12px);
+    transition:
+      opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0s),
+      transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) var(--stagger-delay, 0s);
+  }
+  [data-stagger] .stagger-child.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    [data-stagger] .stagger-child {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

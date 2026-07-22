@@ -1,0 +1,72 @@
+---
+import BlurFade from "../motion/BlurFade.astro";
+import strings from "../../data/strings.json";
+import MarkdownSection from "../content/MarkdownSection.astro";
+import { getEntry, render } from "astro:content";
+
+const entry = await getEntry("site", "brain-viewer");
+if (!entry) throw new Error("Falta brain-viewer.md en src/content/site/");
+const { Content: BrainContent } = await render(entry);
+---
+
+<section
+  id="cerebro"
+  class="relative border-t-2 border-dashed border-[var(--color-border)] py-16 md:py-24"
+  aria-labelledby="brain-titulo"
+>
+  <div class="container-page">
+    <div class="grid gap-10 lg:grid-cols-2 lg:gap-14">
+      <!-- Columna izquierda: contenido editable -->
+      <div class="flex flex-col justify-center order-2 lg:order-1">
+        <BlurFade as="h2" id="brain-titulo" delay={0.1} duration={0.8} class="font-display text-3xl font-semibold tracking-tight text-[var(--color-foreground)] sm:text-4xl md:text-5xl text-balance">
+          {strings.brainViewer.titulo}
+        </BlurFade>
+        <BlurFade delay={0.2} class="mt-6">
+          <div class="prose-custom">
+            <BrainContent />
+          </div>
+        </BlurFade>
+        <BlurFade delay={0.3} class="mt-6 flex items-center gap-2 text-xs text-[var(--color-muted-foreground)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 2v4"/><path d="m6.4 7.4-2.8-2.8"/><path d="M2 12h4"/><path d="m6.4 16.6-2.8 2.8"/><path d="M12 22v-4"/><path d="m17.6 16.6 2.8 2.8"/><path d="M22 12h-4"/><path d="m17.6 7.4 2.8-2.8"/>
+          </svg>
+          {strings.brainViewer.descripcion}
+        </BlurFade>
+      </div>
+
+      <!-- Columna derecha: cerebro 3D con Google model-viewer -->
+      <BlurFade delay={0.15} duration={1.0} class="order-1 lg:order-2">
+        <div
+          class="relative mx-auto aspect-square w-full max-w-md overflow-hidden rounded-3xl border border-[var(--color-border)] bg-gradient-to-br from-[var(--color-muted)] to-[var(--color-card)] shadow-xl"
+        >
+          <model-viewer
+            src="/models/brain_3d.glb"
+            alt="Modelo 3D interactivo de un cerebro"
+            auto-rotate
+            camera-controls
+            touch-action="pan-y"
+            shadow-intensity="1"
+            shadow-softness="0.8"
+            exposure="1"
+            class="h-full w-full"
+            style="background-color: transparent; width: 100%; height: 100%;"
+          >
+          </model-viewer>
+
+          <!-- Indicador 360° -->
+          <div class="pointer-events-none absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_85%,transparent)] px-2.5 py-1 text-[10px] font-medium uppercase tracking-wider text-[var(--color-muted-foreground)] backdrop-blur-sm">
+            <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-[var(--color-accent)]"></span>
+            360°
+          </div>
+
+          <!-- Hint "Arrastra para rotar" -->
+          <div
+            class="pointer-events-none absolute bottom-4 left-1/2 -translate-x-1/2 rounded-full border border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-card)_90%,transparent)] px-3 py-1.5 text-xs font-medium text-[var(--color-foreground)] opacity-90 backdrop-blur-sm"
+          >
+            Arrastra para rotar
+          </div>
+        </div>
+      </BlurFade>
+    </div>
+  </div>
+</section>

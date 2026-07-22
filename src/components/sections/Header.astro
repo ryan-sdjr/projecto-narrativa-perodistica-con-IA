@@ -1,0 +1,123 @@
+---
+import { getEntry } from "astro:content";
+import strings from "../../data/strings.json";
+
+const headerEntry = await getEntry("site", "header");
+---
+
+<header class="sticky top-0 z-40 w-full border-b border-[var(--color-border)] bg-[color-mix(in_oklab,var(--color-background)_85%,transparent)] backdrop-blur-md">
+  <div class="container-page flex h-16 items-center justify-between gap-4">
+    <a href="#main" class="flex items-center gap-3 group" aria-label="Inicio - Universidad Autónoma del Perú">
+      <span class="grid h-10 w-10 place-items-center rounded-full bg-[var(--color-primary)] text-[var(--color-primary-foreground)] font-display text-xl font-semibold transition-transform group-hover:scale-105">
+        A
+      </span>
+      <span class="flex flex-col leading-none">
+        <span class="font-display text-lg font-semibold text-[var(--color-foreground)]">Autónoma</span>
+        <span class="text-[10px] uppercase tracking-wider text-[var(--color-muted-foreground)]">Universidad Autónoma del Perú</span>
+      </span>
+    </a>
+
+    <nav aria-label="Navegación principal" class="hidden md:block">
+      <ul class="flex items-center gap-1">
+        {[
+          { href: "#intro", label: strings.nav.intro },
+          { href: "#ejes", label: strings.nav.ejes },
+          { href: "#cerebro", label: strings.nav.cerebro },
+          { href: "#conclusiones", label: strings.nav.conclusiones },
+          { href: "#bibliografia", label: strings.nav.bibliografia },
+        ].map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="relative inline-flex items-center px-3 py-2 text-sm font-medium text-[var(--color-muted-foreground)] transition-colors hover:text-[var(--color-foreground)] after:absolute after:inset-x-3 after:-bottom-0.5 after:h-0.5 after:scale-x-0 after:bg-[var(--color-accent)] after:transition-transform after:duration-300 hover:after:scale-x-100"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+
+    <button
+      type="button"
+      data-mobile-toggle
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Abrir menú"
+      class="md:hidden grid h-10 w-10 place-items-center rounded-md border border-[var(--color-border)] text-[var(--color-foreground)] transition-colors hover:bg-[var(--color-muted)]"
+    >
+      <svg data-icon="menu" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+      </svg>
+      <svg data-icon="close" class="hidden" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <div
+    id="mobile-menu"
+    data-mobile-menu
+    class="md:hidden hidden border-t border-[var(--color-border)] bg-[var(--color-background)]"
+  >
+    <nav aria-label="Navegación móvil" class="container-page py-4">
+      <ul class="flex flex-col gap-1">
+        {[
+          { href: "#intro", label: strings.nav.intro },
+          { href: "#ejes", label: strings.nav.ejes },
+          { href: "#cerebro", label: strings.nav.cerebro },
+          { href: "#conclusiones", label: strings.nav.conclusiones },
+          { href: "#bibliografia", label: strings.nav.bibliografia },
+        ].map((item) => (
+          <li>
+            <a
+              href={item.href}
+              data-mobile-link
+              class="block rounded-md px-3 py-3 text-base font-medium text-[var(--color-foreground)] transition-colors hover:bg-[var(--color-muted)]"
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const init = () => {
+    const toggle = document.querySelector<HTMLButtonElement>("[data-mobile-toggle]");
+    const menu = document.querySelector<HTMLDivElement>("[data-mobile-menu]");
+    const links = document.querySelectorAll<HTMLAnchorElement>("[data-mobile-link]");
+    const iconMenu = document.querySelector<SVGElement>("[data-icon='menu']");
+    const iconClose = document.querySelector<SVGElement>("[data-icon='close']");
+
+    if (!toggle || !menu) return;
+
+    const open = () => {
+      menu.classList.remove("hidden");
+      toggle.setAttribute("aria-expanded", "true");
+      toggle.setAttribute("aria-label", "Cerrar menú");
+      iconMenu?.classList.add("hidden");
+      iconClose?.classList.remove("hidden");
+    };
+    const close = () => {
+      menu.classList.add("hidden");
+      toggle.setAttribute("aria-expanded", "false");
+      toggle.setAttribute("aria-label", "Abrir menú");
+      iconMenu?.classList.remove("hidden");
+      iconClose?.classList.add("hidden");
+    };
+
+    toggle.addEventListener("click", () => {
+      const isOpen = toggle.getAttribute("aria-expanded") === "true";
+      isOpen ? close() : open();
+    });
+    links.forEach((l) => l.addEventListener("click", close));
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") close();
+    });
+  };
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

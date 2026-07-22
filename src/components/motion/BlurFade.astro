@@ -1,0 +1,79 @@
+---
+/**
+ * BlurFade: entra con blur + fade (efecto cinematográfico).
+ * Más dramático que FadeIn, ideal para hero y títulos.
+ */
+export interface Props {
+  delay?: number;
+  duration?: number;
+  as?: "div" | "section" | "h1" | "h2" | "h3" | "p" | "span";
+  class?: string;
+}
+
+const props = Astro.props as unknown as Props;
+const {
+  delay = 0,
+  duration = 0.9,
+  as: Tag = "div",
+  class: className = "",
+} = props;
+---
+
+<Tag
+  data-blur-fade
+  style={`--blur-delay:${delay}s;--blur-duration:${duration}s;`}
+  class={`blur-fade-init ${className}`}
+>
+  <slot />
+</Tag>
+
+<style>
+  .blur-fade-init {
+    opacity: 0;
+    filter: blur(8px);
+    transform: translateY(8px);
+    transition:
+      opacity var(--blur-duration, 0.9s) cubic-bezier(0.22, 1, 0.36, 1) var(--blur-delay, 0s),
+      filter var(--blur-duration, 0.9s) cubic-bezier(0.22, 1, 0.36, 1) var(--blur-delay, 0s),
+      transform var(--blur-duration, 0.9s) cubic-bezier(0.22, 1, 0.36, 1) var(--blur-delay, 0s);
+  }
+  .blur-fade-init.is-visible {
+    opacity: 1;
+    filter: blur(0);
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .blur-fade-init {
+      opacity: 1;
+      filter: none;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const init = () => {
+    const els = document.querySelectorAll<HTMLElement>("[data-blur-fade]");
+    if (els.length === 0) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) {
+      els.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { rootMargin: "0px 0px -5% 0px", threshold: 0.05 }
+    );
+    els.forEach((el) => observer.observe(el));
+  };
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

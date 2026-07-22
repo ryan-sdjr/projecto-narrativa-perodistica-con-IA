@@ -1,0 +1,31 @@
+---
+import MarkdownSection from "../content/MarkdownSection.astro";
+import BlurFade from "../motion/BlurFade.astro";
+---
+
+<section
+  id="bibliografia"
+  class="relative border-t-2 border-dashed border-[var(--color-border)] py-16 md:py-24"
+  aria-labelledby="biblio-titulo"
+>
+  <div class="container-page">
+    <div class="mx-auto max-w-4xl">
+      <BlurFade duration={0.6} class="mb-6 flex items-center gap-3">
+        <span class="grid h-10 w-10 place-items-center rounded-full border border-[var(--color-border)] bg-[var(--color-card)] text-[var(--color-foreground)]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20"/>
+          </svg>
+        </span>
+        <span class="text-sm font-semibold uppercase tracking-[0.2em] text-[var(--color-muted-foreground)]">Bibliografía</span>
+      </BlurFade>
+      <MarkdownSection slug="bibliography" />
+    </div>
+  </div>
+
+  <footer class="container-page mt-20 border-t border-[var(--color-border)] pt-8">
+    <div class="flex flex-col items-center justify-between gap-4 text-center text-sm text-[var(--color-muted-foreground)] sm:flex-row sm:text-left">
+      <p>© {new Date().getFullYear()} Universidad Autónoma del Perú. Artículo informativo.</p>
+      <p class="text-xs">Construido con Astro · Hecho con propósito educativo</p>
+    </div>
+  </footer>
+</section>

@@ -1,0 +1,30 @@
+{
+  "site": {
+    "nombre": "Biología o Debilidad",
+    "descripcionCorta": "Por qué los adolescentes son el blanco perfecto de la manipulación",
+    "autor": "Universidad Autónoma del Perú"
+  },
+  "nav": {
+    "intro": "Introducción",
+    "ejes": "Ejes",
+    "cerebro": "Reacción cerebral",
+    "conclusiones": "Conclusiones",
+    "bibliografia": "Bibliografía"
+  },
+  "tabs": {
+    "eje1": "Eje 1",
+    "eje2": "Eje 2",
+    "eje3": "Eje 3",
+    "ariaLabel": "Selecciona un eje temático"
+  },
+  "brainViewer": {
+    "titulo": "Descripción de reacción cerebral",
+    "descripcion": "Modelo 3D interactivo de un cerebro humano. Arrastra para rotarlo 360°.",
+    "cargando": "Cargando modelo 3D…",
+    "alternativo": "Tu navegador no soporta el visor 3D. Aquí verás un modelo interactivo del cerebro."
+  },
+  "ui": {
+    "leerMas": "Leer más",
+    "saltarASeccion": "Saltar al contenido principal"
+  }
+}

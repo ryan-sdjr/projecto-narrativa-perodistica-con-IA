@@ -1,0 +1,98 @@
+---
+/**
+ * FadeIn: aparece con fade + desplazamiento al entrar en viewport.
+ * Respeta prefers-reduced-motion.
+ *
+ * Props:
+ * - delay: segundos de delay (default 0)
+ * - duration: duración en segundos (default 0.7)
+ * - y: desplazamiento vertical inicial en px (default 16)
+ * - once: si true, no se vuelve a ocultar (default true)
+ * - as: tag HTML a renderizar (default 'div')
+ */
+export interface Props {
+  delay?: number;
+  duration?: number;
+  y?: number;
+  once?: boolean;
+  as?: "div" | "section" | "article" | "header" | "footer" | "aside" | "span" | "p" | "h1" | "h2" | "h3" | "h4";
+  class?: string;
+}
+
+const props = Astro.props as unknown as Props;
+const {
+  delay = 0,
+  duration = 0.7,
+  y = 16,
+  once = true,
+  as: Tag = "div",
+  class: className = "",
+} = props;
+
+const styleAttr = `--fade-delay:${delay}s;--fade-duration:${duration}s;--fade-y:${y}px;`;
+---
+
+<Tag
+  data-fade-in
+  data-fade-once={once ? "true" : "false"}
+  style={styleAttr}
+  class={`fade-in-init ${className}`}
+>
+  <slot />
+</Tag>
+
+<style>
+  .fade-in-init {
+    opacity: 0;
+    transform: translateY(var(--fade-y));
+    transition:
+      opacity var(--fade-duration, 0.7s) cubic-bezier(0.22, 1, 0.36, 1) var(--fade-delay, 0s),
+      transform var(--fade-duration, 0.7s) cubic-bezier(0.22, 1, 0.36, 1) var(--fade-delay, 0s);
+    will-change: opacity, transform;
+  }
+  .fade-in-init.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-in-init {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+</style>
+
+<script>
+  const init = () => {
+    const elements = document.querySelectorAll<HTMLElement>("[data-fade-in]");
+    if (elements.length === 0) return;
+
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce || !("IntersectionObserver" in window)) {
+      elements.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const target = entry.target as HTMLElement;
+          if (entry.isIntersecting) {
+            target.classList.add("is-visible");
+            const once = target.dataset.fadeOnce === "true";
+            if (once) observer.unobserve(target);
+          } else if (target.dataset.fadeOnce !== "true") {
+            target.classList.remove("is-visible");
+          }
+        });
+      },
+      { rootMargin: "0px 0px -10% 0px", threshold: 0.1 }
+    );
+
+    elements.forEach((el) => observer.observe(el));
+  };
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

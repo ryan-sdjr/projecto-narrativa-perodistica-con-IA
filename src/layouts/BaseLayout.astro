@@ -1,0 +1,93 @@
+---
+import "../styles/globals.css";
+import strings from "../data/strings.json";
+
+interface Props {
+  titulo?: string;
+  descripcion?: string;
+  imagenOg?: string;
+}
+
+const {
+  titulo = `${strings.site.nombre} — ${strings.site.descripcionCorta}`,
+  descripcion = "Artículo informativo sobre por qué los adolescentes son biológicamente vulnerables a la manipulación digital. Decodifica las mecánicas y promueve una ciudadanía digital consciente.",
+  imagenOg = "/og-image.png",
+} = Astro.props;
+
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#c75a1c" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#d97a3f" media="(prefers-color-scheme: dark)" />
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="canonical" href={canonical} />
+
+    <title>{titulo}</title>
+    <meta name="description" content={descripcion} />
+    <meta name="author" content={strings.site.autor} />
+
+    <meta property="og:type" content="article" />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={new URL(imagenOg, Astro.site).toString()} />
+    <meta property="og:locale" content="es_PE" />
+    <meta property="og:site_name" content={strings.site.nombre} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={titulo} />
+    <meta name="twitter:description" content={descripcion} />
+    <meta name="twitter:image" content={new URL(imagenOg, Astro.site).toString()} />
+
+    <link rel="preconnect" href="https://modelviewer.dev" crossorigin />
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": titulo,
+      "description": descripcion,
+      "inLanguage": "es",
+      "author": { "@type": "Organization", "name": strings.site.autor },
+      "publisher": { "@type": "Organization", "name": strings.site.autor },
+    })} />
+  </head>
+  <body>
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-[var(--color-accent)] focus:text-[var(--color-accent-foreground)] focus:rounded-md">
+      {strings.ui.saltarASeccion}
+    </a>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+  .focus\:not-sr-only:focus {
+    position: fixed;
+    width: auto;
+    height: auto;
+    padding: 0.5rem 1rem;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
+</style>
